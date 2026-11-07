@@ -116,3 +116,43 @@ For the most part, your job with this skill will be adding adding decoupling, wi
 For example, for decoupling, think about derating depending on conditions, DC voltage, etc., and think about upstream circuitry like voltage regulators and switches and how much capacitance they can take.
 
 If you need to do more high-level work than the work described above as "most of your job," you can go ahead, but make sure you understand why it's necessary and do not add a lot of bloat. Always be able to explain your decisions logically without much possibility of dispute, and do explain them in your answer at the end, along with other liberties you took.
+
+### Connectivity truth: netlist AND pin geometry
+
+ERC and an old `netlist.kicad_net` are not enough.
+
+After schematic edits, **re-export** the netlist with `kicad-cli sch export netlist` and treat that export as the intent snapshot. Then also check that wires/global labels actually touch pin endpoints on the sheet.
+
+KiCad schematic coordinates are **Y-down**. Symbol-editor local pin `(lx, ly)` on a placed symbol at `(ox, oy)` with rotation 0 maps to:
+
+```text
+world_x = ox + lx
+world_y = oy - ly
+```
+
+Scripted wiring that uses the wrong transform (or places labels near an IC without hitting the pin tip) produces sheets that *look* labeled but geometrically leave pins floating. Labels sitting next to a body without a wire to the pin tip are a failure.
+
+If geometry and netlist disagree: **geometry on the current sheet wins for what would fabricate after a fresh export**; a stale netlist must not be trusted as "design intent" until you re-export. Prefer regenerating stub wires from known pin maps over hand-nudging hundreds of labels.
+
+A helper for this check lives at `skills/export/scripts/check_sch_geo_vs_netlist.py`.
+
+### Electrical review ERC will not catch
+
+Before you call a schematic "done," walk these with datasheets open. ERC will often stay green while the board is still dead or destructive.
+
+1. **I2C / open-drain levels vs device VDD**  
+   Pull-ups must not exceed each device's pin absolute max (often `VDD + 0.3 V`). Mixing 1.8 V sensors with 3.3 V pull-ups without level translation is a hard fail. If one device on the bus needs ≥2.5 V VDD (common for ALS parts), do not park it on a 1.8 V rail.
+
+2. **Multi-rail chicken-egg enables**  
+   If a PMIC's `EN*` pins enable the rail that powers the MCU/GreenPAK supposed to drive those same `EN*` pins, cold start can deadlock. Prefer a path that can assert EN before that rail exists (for example STATUS/ready → EN, or strap to an always-available logic high the datasheet allows). Never leave EN floating when the datasheet forbids it.
+
+3. **Duplicate subcircuits across hierarchical sheets**  
+   "Detail" sheets that re-place the same divider/battery symbols without DNP create parallel components and wrong thresholds. One sheet owns the real BOM parts; extras are DNP or text-only references.
+
+4. **Stub / incomplete symbols for complex ICs**  
+   A 4-pin "VDD/SDA/SCL/GND" stand-in for a part that also needs high-voltage AVDD (or many supplies) is not Phase-1 ready. Mark DNP and say so, or finish the supplies.
+
+5. **LDO current limits vs burst loads**  
+   Peak radio/MCU current may exceed LDO Imax; that is only acceptable if local bulk (e.g. polymer) is intentional and documented.
+
+Report these as electrical findings even when ERC is clean.
