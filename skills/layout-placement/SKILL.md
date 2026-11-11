@@ -3,6 +3,8 @@ name: layout-placement
 description: Place components on a KiCad board so each part sits where its circuit needs it, placement DRC passes, and every pad stays reachable, with IPC scripts that move parts and measure distances and routability. Covers reading the circuit, fixed parts, IC orientation, and decoupling, regulator, clock, RF and filter parts. Use for component placement; not for routing or schematic design.
 ---
 
+Run KiCad's CLI as plain `kicad-cli` (in Backplane, the KiCad Backplane has selected, first on your PATH; `$BACKPLANE_KICAD_CLI` is the same program), never by another install's path.
+
 # PCB component placement
 
 Placement decides most of what routing can achieve. A part in the wrong

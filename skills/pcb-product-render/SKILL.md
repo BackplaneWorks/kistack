@@ -3,6 +3,8 @@ name: pcb-product-render
 description: Create realistic Blender product renders from KiCad PCB projects, including refreshed 3D exports, physically plausible PCB materials, camera/stage setup, and visual validation.
 ---
 
+Run KiCad's CLI as plain `kicad-cli` (in Backplane, the KiCad Backplane has selected, first on your PATH; `$BACKPLANE_KICAD_CLI` is the same program), never by another install's path.
+
 # PCB Product Render
 
 Use this skill when a user wants a KiCad PCB exported to STEP/GLB and rendered as realistic product imagery. The desired result is a clean product photograph/render, not a flat KiCad preview or vector-like orthographic diagram.

@@ -3,6 +3,8 @@ name: kicad-pcb
 description: Review KiCad PCB layouts with DRC, layer renders, and 3D-model interference inspection.
 ---
 
+Run KiCad's CLI as plain `kicad-cli` (in Backplane, the KiCad Backplane has selected, first on your PATH; `$BACKPLANE_KICAD_CLI` is the same program), never by another install's path.
+
 # Skill for PCB design and review
 
 ## Editing the active board in place

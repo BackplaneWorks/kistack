@@ -3,6 +3,8 @@ name: kicad-panelize
 description: Use KiKit to panelize a given PCB
 ---
 
+Run KiCad's CLI as plain `kicad-cli` (in Backplane, the KiCad Backplane has selected, first on your PATH; `$BACKPLANE_KICAD_CLI` is the same program), never by another install's path.
+
 # Skill for PCB panelization 
 
 ## Setup

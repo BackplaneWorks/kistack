@@ -3,6 +3,8 @@ name: kicad-symbol
 description: Generate compliant KiCad symbols
 ---
 
+Run KiCad's CLI as plain `kicad-cli` (in Backplane, the KiCad Backplane has selected, first on your PATH; `$BACKPLANE_KICAD_CLI` is the same program), never by another install's path.
+
 # This skill allows an LLM to generate KiCad symbols using a variety of data sources, validated against KLC standards.
 
 ## Setup

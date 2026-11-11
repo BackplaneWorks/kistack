@@ -3,6 +3,8 @@ name: kicad-export
 description: Generate deterministic KiCad ERC, DRC, fabrication, assembly, documentation, and 3D export outputs with kicad-cli.
 ---
 
+Run KiCad's CLI as plain `kicad-cli`. In Backplane that is the KiCad Backplane has selected: it is first on your PATH, and `$BACKPLANE_KICAD_CLI` names the same program. Never call a kicad-cli by another install's path (a stock `/usr/bin` or `~/.local/bin` one, a macOS KiCad.app, an old Backplane folder): its version and export behaviour differ. Check which KiCad you have with `kicad-cli version` before the first export.
+
 Using kicad-cli, parse this documentation and use the necessary items to generate ERC/DRC reports, then proceed to create GERBERs, drill files, position files, and BOM files depending on the user's manufacturer. To make this deterministic, store your order of commands in a Python or bash script and modify it per-project.
 
 JLCPCB and NextPCB require a specific format for their position files:
