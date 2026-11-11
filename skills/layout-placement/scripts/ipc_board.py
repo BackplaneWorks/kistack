@@ -143,7 +143,7 @@ def _sockets():
     else:
         roots = [os.environ.get("XDG_RUNTIME_DIR"), f"/run/user/{os.getuid()}"]
         pats = [os.path.join(r, "backplane", "kicad", "*", "api.sock") for r in roots if r]
-        homes = [os.environ.get("BACKPLANE_HOME"), os.path.expanduser("~/.backplane-bend")]
+        homes = [os.environ.get("BACKPLANE_HOME")]  # never 0.14's ~/.backplane-bend: a stale home
         pats += [os.path.join(h, "run", "kicad", "*", "api.sock") for h in homes if h]
     return sorted({os.path.realpath(p) for pat in pats for p in glob.glob(pat)})
 

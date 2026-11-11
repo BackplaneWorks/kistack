@@ -3,6 +3,8 @@ name: kicad-gerbers
 description: Generate, render, and visually review KiCad Gerber layers as a fabrication-output inspection step.
 ---
 
+Run KiCad's CLI as plain `kicad-cli` (in Backplane, the KiCad Backplane has selected, first on your PATH; `$BACKPLANE_KICAD_CLI` is the same program), never by another install's path.
+
 # This skill allows an LLM to review generated GERBER files for production of a PCB.
 
 If no generated GERBERs exist, please request for the user to generate them or generate them yourself for the purpose of review only, in a separate directory.

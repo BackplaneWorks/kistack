@@ -163,7 +163,7 @@ def main():
     if a.skill:
         SKILL = os.path.realpath(a.skill)
     print("testing", SKILL)
-    cli = os.environ.get("KICAD_CLI") or shutil.which("kicad-cli")
+    cli = os.environ.get("KICAD_CLI") or os.environ.get("BACKPLANE_KICAD_CLI") or shutil.which("kicad-cli")
     if not cli:
         sys.exit("set KICAD_CLI to a kicad-cli with api-server")
     tmp = tempfile.mkdtemp(prefix="layout-placement-test.")
