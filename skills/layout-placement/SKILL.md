@@ -338,9 +338,12 @@ installed, else with python3 and pip. It installs nothing elsewhere.
 - kicad-cli DRC reads the file, so save first.
 - Backplane stops an idle server, and unsaved moves go with it. Save after
   each group of parts. If a script says no server has the board open, open
-  it again with `OpenDocument`. Only if that keeps happening, run your own
-  server, `kicad-cli api-server --socket <dir>/api.sock <board>`, and set
-  `KICAD_API_SOCKET=ipc://<dir>/api.sock`. Never let two servers save the
-  same board, and let one agent at a time move parts on it.
+  it again with `OpenDocument`. Only if that keeps happening, and only while
+  nobody has the project open in KiCad, run your own server,
+  `kicad-cli api-server --socket <dir>/api.sock <board>`, and set
+  `KICAD_API_SOCKET=ipc://<dir>/api.sock`. While the person has it open, the
+  open editor is the one way in: a second server's saves make their KiCad
+  reload under them. Never let two servers save the same board, and let one
+  agent at a time move parts on it.
 
 Run each script in the foreground and wait for its result.
