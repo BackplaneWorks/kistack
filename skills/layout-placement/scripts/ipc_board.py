@@ -135,6 +135,11 @@ def _canonical_from(start, target):
                      "only when the user asked for an alternate board.")
 
 
+# The actor KiCad attributes these edits to (their own undo group and change log entry):
+# the agent's thread when Backplane runs it.
+CLIENT = os.environ.get("BACKPLANE_KICAD_ACTOR") or "works.backplane.placement"
+
+
 def _sockets():
     """Backplane's KiCad sockets: under $XDG_RUNTIME_DIR/backplane/kicad, or
     <Backplane home>/run/kicad where there is no runtime directory (macOS)."""
@@ -142,7 +147,10 @@ def _sockets():
         pats = [os.environ["LAYOUT_PLACEMENT_SOCKETS"]]
     else:
         roots = [os.environ.get("XDG_RUNTIME_DIR"), f"/run/user/{os.getuid()}"]
-        pats = [os.path.join(r, "backplane", "kicad", "*", "api.sock") for r in roots if r]
+        # live.sock: the open (co-editing) KiCad editor's socket, published by Backplane while
+        # the person has the project open; edits there land live beside theirs
+        pats = [os.path.join(r, "backplane", "kicad", "*", n) for r in roots if r
+                for n in ("live.sock", "api.sock")]
         homes = [os.environ.get("BACKPLANE_HOME")]  # never 0.14's ~/.backplane-bend: a stale home
         pats += [os.path.join(h, "run", "kicad", "*", "api.sock") for h in homes if h]
     return sorted({os.path.realpath(p) for pat in pats for p in glob.glob(pat)})
@@ -162,7 +170,7 @@ def find_socket(board_path):
     env = os.environ.get("KICAD_API_SOCKET")
     if env:
         try:
-            path = _open_board(KiCad(socket_path=env, client_name="works.backplane.placement", timeout_ms=15000))
+            path = _open_board(KiCad(socket_path=env, client_name=CLIENT, timeout_ms=15000))
         except Exception as e:
             raise SystemExit(f"KICAD_API_SOCKET={env}: no board answers ({type(e).__name__}: {e})")
         if path != target:
@@ -171,7 +179,7 @@ def find_socket(board_path):
     seen, hits = [], []
     for sock in _sockets():
         try:
-            path = _open_board(KiCad(socket_path="ipc://" + sock, client_name="works.backplane.placement",
+            path = _open_board(KiCad(socket_path="ipc://" + sock, client_name=CLIENT,
                                      timeout_ms=15000))
         except Exception as e:
             seen.append(f"{sock}: {type(e).__name__}")
@@ -192,7 +200,7 @@ def load(board_path, socket=None):
     if socket:
         _canonical(board_path)
     sock = socket or find_socket(board_path)
-    k = KiCad(socket_path=sock, client_name="works.backplane.placement", timeout_ms=30000)
+    k = KiCad(socket_path=sock, client_name=CLIENT, timeout_ms=30000)
     # the board this connection works on, checked again here: the server
     # may have opened another since find_socket looked
     board = k.get_board()
