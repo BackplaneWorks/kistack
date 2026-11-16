@@ -114,6 +114,11 @@ v20 places better overall than v19. No RF performance is claimed.
 
 ## Changes in this copy
 
+- `SKILL.md`, "Routability": one sentence saying that `route_check.py` and
+  `grid_router.py` check a placement and do not route the board, and that in
+  Backplane tracks come from `kicad_edit`'s `route` (an agent asked to route
+  a board found `grid_router.py` here and routed with it).
+
 Scripts:
 
 - `rules.py` (new): track width, clearance, via diameter and edge clearance

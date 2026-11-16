@@ -236,7 +236,10 @@ After each group of parts, check before going on:
   part with its ground pad facing the pin, a bulk cap far behind its small
   cap, a ground pad without a via site, a two-pin part with uneven gaps, a
   long chain link, an RF shunt off the path, a blocked pin front.
-- **Routability.** `scripts/route_check.py <board> --ic <IC>` routes every
+- **Routability.** (`route_check.py` and `grid_router.py` answer whether a
+  placement can be routed; they do not route the board. In Backplane the
+  board's tracks come from the `kicad_edit` tool's `route` op.)
+  `scripts/route_check.py <board> --ic <IC>` routes every
   local connection on the top layer in two orders, then every net that leaves
   the area to the board edge. The local connections must all exist on the
   finished board at once, so at least one order must route every one of
